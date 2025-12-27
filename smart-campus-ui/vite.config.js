@@ -1,17 +1,24 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import path from 'path'
 
-// https://vitejs.dev/config/
 export default defineConfig({
     plugins: [vue()],
+    // 1. 设置基础路径为 ./，防止打包后路径错误
+    base: './',
+    build: {
+        // 2. 打包输出目录：直接输出到 Spring Boot 的静态资源目录
+        // 注意：请根据你实际的文件夹结构调整 ../src/main/resources/static
+        outDir: '../src/main/resources/static',
+        // 3. 清空目标目录（防止旧文件残留）
+        emptyOutDir: true
+    },
     server: {
-        port: 5173, // 前端运行端口
+        port: 5173,
         proxy: {
-            // 关键配置：告诉 Vite，如果遇到以 /api 开头的请求，都转发给 Spring Boot
             '/api': {
-                target: 'http://localhost:8081', // 你的后端地址
+                target: 'http://localhost:8081',
                 changeOrigin: true,
-                // rewrite: (path) => path.replace(/^\/api/, '') // 如果后端不需要 /api 前缀，可以开启这行。但你的 Controller 都有 /api，所以不需要 rewrite
             }
         }
     }
