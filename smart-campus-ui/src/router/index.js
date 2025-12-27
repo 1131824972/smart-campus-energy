@@ -1,28 +1,28 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-// 定义路由规则
+// 引入组件
+import Dashboard from '../views/dashboard/Dashboard.vue'
+
 const routes = [
     {
         path: '/',
-        name: 'Home',
-        // 简单的临时首页，之后我们会换成真正的组件文件
-        component: { template: '<div style="padding:20px"><h2>📊 仪表盘</h2><p>这里将展示实时能耗图表...</p></div>' }
+        name: 'Dashboard',
+        component: Dashboard
     },
     {
         path: '/devices',
         name: 'Devices',
-        component: { template: '<div style="padding:20px"><h2>🔌 设备管理</h2><p>这里将展示设备列表...</p></div>' }
+        // 暂时用占位符，下一步我们写这个
+        component: { template: '<div class="content-card"><h2>设备管理模块 (开发中)</h2></div>' }
     },
     {
         path: '/alarms',
         name: 'Alarms',
-        component: { template: '<div style="padding:20px"><h2>⚠️ 告警中心</h2><p>这里将展示异常告警记录...</p></div>' }
+        component: { template: '<div class="content-card"><h2>告警中心模块 (开发中)</h2></div>' }
     }
 ]
 
-// 创建路由实例
 const router = createRouter({
-    // 使用 HTML5 模式 (URL没有 # 号)
     history: createWebHistory(),
     routes
 })
