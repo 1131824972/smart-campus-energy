@@ -7,8 +7,8 @@
           <el-icon :size="22" color="#00f3ff"><Lightning /></el-icon>
         </div>
         <div class="logo-text">
-          <span>CYBER</span>
-          <span class="highlight">ENERGY</span>
+          <span>智慧校园</span>
+          <span class="highlight">能耗管理</span>
         </div>
       </div>
 
@@ -22,24 +22,24 @@
       >
         <el-menu-item index="/">
           <el-icon><DataLine /></el-icon>
-          <span>监控大屏 (Dashboard)</span>
+          <span>总控大屏</span>
         </el-menu-item>
 
         <el-menu-item index="/devices">
           <el-icon><Cpu /></el-icon>
-          <span>设备矩阵 (Devices)</span>
+          <span>设备监控矩阵</span>
         </el-menu-item>
 
         <el-menu-item index="/alarms">
           <el-icon><Warning /></el-icon>
-          <span>入侵告警 (Alarms)</span>
+          <span>异常告警中心</span>
         </el-menu-item>
 
-        <div class="menu-label">SYSTEM</div>
+        <div class="menu-label">系统管理</div>
 
         <el-menu-item index="/settings" disabled>
           <el-icon><Setting /></el-icon>
-          <span>系统核心 (Core)</span>
+          <span>系统设置</span>
         </el-menu-item>
       </el-menu>
     </el-aside>
@@ -50,12 +50,12 @@
       <el-header class="tech-header">
         <div class="header-left">
           <el-icon class="pulse-icon" color="#00f3ff" size="20"><Location /></el-icon>
-          <span class="location-text">SECTOR: UNIVERSITY-MAIN / {{ currentRouteName }}</span>
+          <span class="location-text">当前区域：校本部 / {{ currentRouteName }}</span>
         </div>
 
         <div class="header-right">
           <div class="status-indicator">
-            <span class="dot"></span> SYSTEM ONLINE
+            <span class="dot"></span> 系统运行中
           </div>
           <el-avatar :size="30" shape="square" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" style="border: 1px solid #00f3ff" />
         </div>
@@ -81,15 +81,16 @@ const route = useRoute()
 
 const currentRouteName = computed(() => {
   switch (route.path) {
-    case '/': return 'DASHBOARD'
-    case '/devices': return 'DEVICES'
-    case '/alarms': return 'ALERTS'
-    default: return 'UNKNOWN'
+    case '/': return '总控大屏'
+    case '/devices': return '设备列表'
+    case '/alarms': return '告警记录'
+    default: return '未知页面'
   }
 })
 </script>
 
 <style scoped>
+/* 保持之前的样式不变，仅微调文字相关 */
 .layout-container {
   height: 100vh;
   background: transparent;
@@ -97,7 +98,7 @@ const currentRouteName = computed(() => {
 
 /* --- 侧边栏 --- */
 .tech-aside {
-  background: rgba(10, 15, 30, 0.8); /* 极深蓝半透明 */
+  background: rgba(10, 15, 30, 0.85);
   border-right: 1px solid #1e3a8a;
   backdrop-filter: blur(20px);
   display: flex;
@@ -126,7 +127,7 @@ const currentRouteName = computed(() => {
 }
 
 .logo-text {
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Microsoft YaHei', sans-serif; /* 换成中文友好的字体 */
   font-weight: 800;
   font-size: 16px;
   color: #fff;
@@ -134,6 +135,7 @@ const currentRouteName = computed(() => {
 }
 .logo-text .highlight {
   color: #00f3ff;
+  margin-left: 4px;
 }
 
 .tech-menu {
@@ -142,14 +144,13 @@ const currentRouteName = computed(() => {
 }
 
 .menu-label {
-  font-size: 10px;
-  color: #475569;
+  font-size: 12px;
+  color: #64748b;
   padding: 20px 0 10px 24px;
-  letter-spacing: 2px;
   font-weight: bold;
 }
 
-/* 菜单项激活特效：左侧光剑 */
+/* 菜单项激活特效 */
 :deep(.el-menu-item.is-active) {
   background: linear-gradient(90deg, rgba(0, 243, 255, 0.15), transparent) !important;
   border-left: 3px solid #00f3ff;
@@ -170,11 +171,10 @@ const currentRouteName = computed(() => {
   align-items: center;
   justify-content: space-between;
   padding: 0 30px;
-  background: rgba(5, 10, 20, 0.5);
+  background: rgba(5, 10, 20, 0.6);
 }
 
 .location-text {
-  font-family: 'Courier New', monospace;
   font-size: 14px;
   color: #00f3ff;
   letter-spacing: 1px;
@@ -192,7 +192,6 @@ const currentRouteName = computed(() => {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-family: monospace;
 }
 
 .dot {
@@ -214,7 +213,7 @@ const currentRouteName = computed(() => {
   100% { opacity: 1; text-shadow: 0 0 10px #00f3ff; }
 }
 
-/* 页面切换：全息扫描效果 */
+/* 页面切换动画 */
 .cyber-fade-enter-active,
 .cyber-fade-leave-active {
   transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
