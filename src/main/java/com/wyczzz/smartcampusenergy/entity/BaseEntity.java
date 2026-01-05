@@ -13,9 +13,9 @@ import java.util.Date;
 
 @Getter
 @Setter
-@MappedSuperclass // 重点1：表示这是一个父类，不会映射成单独的表，但它的属性会被子类继承到各自的表中
-@EntityListeners(AuditingEntityListener.class) // 重点2：开启JPA审计监听，自动填充创建/修改时间
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // 重点3：这是我们在实验5学到的“防爆盾”，防止Jackson序列化报错
+@MappedSuperclass // 表示这是一个父类，不会映射成单独的表，但它的属性会被子类继承到各自的表中
+@EntityListeners(AuditingEntityListener.class) // 开启JPA审计监听，自动填充创建/修改时间
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // 防止Jackson序列化报错
 public abstract class BaseEntity implements Serializable {
 
     @Id // 主键

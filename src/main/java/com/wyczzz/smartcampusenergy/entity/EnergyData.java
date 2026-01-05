@@ -1,7 +1,7 @@
 package com.wyczzz.smartcampusenergy.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*; // 确保是 jakarta
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 

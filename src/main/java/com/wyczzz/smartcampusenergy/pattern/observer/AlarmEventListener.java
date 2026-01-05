@@ -20,7 +20,6 @@ public class AlarmEventListener {
     private AlarmRecordRepository alarmRecordRepository;
 
     // @EventListener 注解标识这是一个观察者方法
-    // @Async 表示异步执行（可选），防止告警逻辑卡住数据生成的主线程
     @EventListener
     public void handleEnergyDataEvent(EnergyDataGeneratedEvent event) {
         EnergyData data = event.getEnergyData();

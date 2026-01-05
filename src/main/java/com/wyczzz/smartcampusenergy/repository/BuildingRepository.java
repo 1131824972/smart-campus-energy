@@ -7,10 +7,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository // 标记这是一个仓库 Bean
+@Repository
 public interface BuildingRepository extends JpaRepository<Building, Long>, JpaSpecificationExecutor<Building> {
 
-    // 🔨 自动生成 SQL：select * from building where name = ?
     // 用于检查建筑名称是否重复
     List<Building> findByName(String name);
 }

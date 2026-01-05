@@ -29,7 +29,7 @@ public class AlarmController {
     @Operation(summary = "获取所有历史告警记录")
     @GetMapping
     public List<AlarmRecordDTO> getAllAlarms() {
-        // 按时间倒序查所有（最新的告警排在最上面）
+        // 按时间倒序查所有
         List<AlarmRecord> alarms = alarmRecordRepository.findAll(
                 Sort.by(Sort.Direction.DESC, "createTime")
         );
@@ -37,7 +37,7 @@ public class AlarmController {
         return alarms.stream()
                 .map(alarm -> {
                     AlarmRecordDTO dto = modelMapper.map(alarm, AlarmRecordDTO.class);
-                    // 手动设置设备信息（如果 ModelMapper 没自动映射到的话）
+                    // 手动设置设备信息
                     if (alarm.getDevice() != null) {
                         dto.setDeviceName(alarm.getDevice().getName());
                         dto.setDeviceSn(alarm.getDevice().getSn());

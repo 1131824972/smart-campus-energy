@@ -79,13 +79,13 @@ public class DataInitRunner implements CommandLineRunner {
 
         // 重新查出来，确保拿到数据库生成的ID（因为是按顺序存的，按顺序取即可）
         List<Building> savedBuildings = buildingService.findAll();
-        // 为了保险起见，我们通过名字匹配一下对象，防止顺序乱了
+        // 为了保险起见，我通过名字匹配一下对象，防止顺序乱了
         Building savedB1_Qiu = findBuildingByName(savedBuildings, "楸苑宿舍三号楼");
         Building savedB2_Lixing = findBuildingByName(savedBuildings, "力行楼");
         Building savedB3_Soft = findBuildingByName(savedBuildings, "软件学院楼");
         Building savedB4_Lib = findBuildingByName(savedBuildings, "图书馆");
 
-        // --- 2. 创建设备 (严格按照文档表格 [cite: 57]) ---
+        // --- 2. 创建设备  ---
         List<Device> devices = new ArrayList<>();
 
         // 序号1: 宿舍智能电表-01
@@ -132,7 +132,7 @@ public class DataInitRunner implements CommandLineRunner {
         d.setRoomNumber(room);
         d.setMaxPower(maxPower);
         d.setBuilding(building);
-        d.setStatus("ONLINE"); // 默认在线 [cite: 15]
+        d.setStatus("ONLINE"); // 默认在线
         return d;
     }
 }

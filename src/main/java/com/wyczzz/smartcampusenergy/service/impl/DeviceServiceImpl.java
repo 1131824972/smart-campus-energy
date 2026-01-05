@@ -18,9 +18,7 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     @Transactional
     public void initData(List<Device> devices) {
-        // 这里留个心眼：实际业务中可能需要检查 SN 唯一性
-        // 但初始化数据是我们硬编码的，确保没问题，所以直接保存
-        deviceRepository.saveAll(devices);
+       deviceRepository.saveAll(devices);
     }
 
     @Override
