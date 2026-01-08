@@ -4,11 +4,9 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.wyczzz.smartcampusenergy.entity.Device;
 import com.wyczzz.smartcampusenergy.entity.EnergyData;
+import com.wyczzz.smartcampusenergy.pattern.factory.PowerGenStrategyFactory;
 import com.wyczzz.smartcampusenergy.pattern.observer.EnergyDataGeneratedEvent;
-import com.wyczzz.smartcampusenergy.pattern.strategy.DayTimeStrategy;
-import com.wyczzz.smartcampusenergy.pattern.strategy.NightModeStrategy;
 import com.wyczzz.smartcampusenergy.pattern.strategy.PowerGenStrategy;
-import com.wyczzz.smartcampusenergy.pattern.strategy.SpikeStrategy;
 import com.wyczzz.smartcampusenergy.repository.EnergyDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -32,12 +30,9 @@ public class SimulatorService {
     @Autowired
     private ApplicationEventPublisher eventPublisher;
 
+    // 【改动】不再直接注入 List<Strategy>，而是注入工厂
     @Autowired
-    private DayTimeStrategy dayTimeStrategy;
-    @Autowired
-    private NightModeStrategy nightModeStrategy;
-    @Autowired
-    private SpikeStrategy spikeStrategy;
+    private PowerGenStrategyFactory strategyFactory;
 
     // 内存缓存：记录每个设备当前的累计用电量
     private final Map<Long, Double> kwhCounter = new ConcurrentHashMap<>();
@@ -51,23 +46,26 @@ public class SimulatorService {
         Date now = new Date();
         int currentHour = DateUtil.hour(now, true);
 
-        System.out.println("⚡ [模拟器] 开始生成 " + devices.size() + " 个设备的数据...");
+        // 随机判定当前是否发生异常 (5% 概率)
+        boolean isAnomaly = RandomUtil.randomInt(0, 100) < 5;
+
+        // 【改动】通过工厂模式获取策略，代码语义更清晰
+        PowerGenStrategy currentStrategy = strategyFactory.getStrategy(currentHour, isAnomaly);
+
+        System.out.println("⚡ [模拟器] 时间:" + currentHour + "点 | 异常:" + isAnomaly
+                + " | 策略:" + currentStrategy.getClass().getSimpleName());
 
         for (Device device : devices) {
-            // 1. 选择策略
-            PowerGenStrategy strategy = selectStrategy(currentHour);
-
-            // 2. 生成数据
-            double[] result = strategy.generate(device);
+            // 1. 策略模式：生成数据
+            double[] result = currentStrategy.generate(device);
             double voltage = result[0];
             double power = result[1];
 
-            // 3. 计算累计用电量
+            // 2. 业务计算
             double incrementKwh = (power * 5) / 3600000.0;
             double currentTotalKwh = kwhCounter.getOrDefault(device.getId(), 0.0) + incrementKwh;
             kwhCounter.put(device.getId(), currentTotalKwh);
 
-            // 4. 封装对象
             EnergyData data = new EnergyData();
             data.setDevice(device);
             data.setVoltage(voltage);
@@ -75,26 +73,10 @@ public class SimulatorService {
             data.setCurrentVal(power / voltage);
             data.setKwh(currentTotalKwh);
 
-            // 5. 存库
             energyDataRepository.save(data);
 
-            // 6. 发布事件 (观察者模式)
+            // 3. 观察者模式：发布事件 (现在是异步处理了！)
             eventPublisher.publishEvent(new EnergyDataGeneratedEvent(this, data));
-        }
-    }
-
-    private PowerGenStrategy selectStrategy(int hour) {
-        // 5% 概率发生故障
-        if (RandomUtil.randomInt(0, 100) < 5) {
-            return spikeStrategy;
-        }
-
-        // 日间 模式: 08:00 - 22:00
-        if (hour >= 8 && hour < 22) {
-            return dayTimeStrategy;
-        } else {
-            // 夜间 模式
-            return nightModeStrategy;
         }
     }
 }

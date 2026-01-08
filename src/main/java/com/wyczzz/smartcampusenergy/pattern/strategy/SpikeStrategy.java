@@ -8,8 +8,14 @@ import org.springframework.stereotype.Component;
 public class SpikeStrategy implements PowerGenStrategy {
 
     @Override
+    public boolean matches(int currentHour, boolean isAnomaly) {
+        // 只要是异常状态，我就生效
+        return isAnomaly;
+    }
+
+    @Override
     public double[] generate(Device device) {
-        // 随机决定是搞“电压异常”还是“功率过载”
+        // 随机决定是“电压异常”还是“功率过载”
         boolean isVoltageIssue = RandomUtil.randomBoolean();
 
         double voltage;

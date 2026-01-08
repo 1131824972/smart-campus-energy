@@ -1,23 +1,23 @@
 package com.wyczzz.smartcampusenergy.pattern.strategy;
 
-import cn.hutool.core.util.RandomUtil; // 使用 Hutool 工具包生成随机数
+import cn.hutool.core.util.RandomUtil;
 import com.wyczzz.smartcampusenergy.entity.Device;
 import org.springframework.stereotype.Component;
 
-@Component // 注册为 Bean，方便调用
+@Component
 public class DayTimeStrategy implements PowerGenStrategy {
 
     @Override
-    public double[] generate(Device device) {
-        // 1. 模拟电压：标准民用电压 220V，波动范围 210V - 235V
-        // RandomUtil.randomDouble(min, max)
-        double voltage = RandomUtil.randomDouble(210.0, 235.0);
+    public boolean matches(int currentHour, boolean isAnomaly) {
+        // 条件：非异常状态 且 时间在 8点到22点之间 (含8点，不含22点)
+        return !isAnomaly && (currentHour >= 8 && currentHour < 22);
+    }
 
-        // 2. 模拟功率：日间活跃模式
-        // 功率范围：额定功率的 20% - 90%
+    @Override
+    public double[] generate(Device device) {
+        double voltage = RandomUtil.randomDouble(210.0, 235.0);
         double maxPower = device.getMaxPower();
         double power = RandomUtil.randomDouble(maxPower * 0.2, maxPower * 0.9);
-
         return new double[]{voltage, power};
     }
 }

@@ -8,14 +8,16 @@ import org.springframework.stereotype.Component;
 public class NightModeStrategy implements PowerGenStrategy {
 
     @Override
+    public boolean matches(int currentHour, boolean isAnomaly) {
+        // 条件：非异常状态 且 (早于8点 或 晚于等于22点)
+        return !isAnomaly && (currentHour < 8 || currentHour >= 22);
+    }
+
+    @Override
     public double[] generate(Device device) {
-        // 1. 电压依旧正常波动
-        double voltage = RandomUtil.randomDouble(215.0, 225.0); // 夜间电压可能更稳一点
-
-        // 2. 模拟功率：夜间休眠模式
-        // 功率范围：10W - 100W (待机功耗)
+        double voltage = RandomUtil.randomDouble(215.0, 225.0);
+        // 夜间待机功耗 10W-100W
         double power = RandomUtil.randomDouble(10.0, 100.0);
-
         return new double[]{voltage, power};
     }
 }
